@@ -1,4 +1,15 @@
-﻿# XPhone Server Installationsverzeichnis bestimmen
+﻿# Überprüfen, ob das Skript mit Administratorrechten ausgeführt wird
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
+    Write-Warning "Das Skript wird nicht mit Administratorrechten ausgeführt. Es wird nun mit Administratorrechten neu gestartet."
+    
+    # Skript als Administrator neu starten
+    $newProcess = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    
+    # Beenden des aktuellen Prozesses
+    Exit
+}
+
+# XPhone Server Installationsverzeichnis bestimmen
 $InstallDirXphone = Get-Item -Path "HKLM:\SOFTWARE\C4B\XPhoneServer" | Get-ItemPropertyValue -Name "InstallDir"
 
 # Bestimme das Installationsverzeichnis der aktuell installierten .Net Version
